@@ -1,8 +1,45 @@
-import { format } from 'date-fns';
+// src/lib/format.ts
+import { format, parseISO, formatDistanceToNow } from 'date-fns'
+import { id } from 'date-fns/locale'
 
 /**
- * Format number as Indonesian Rupiah (IDR) with no decimals
- * Uses Intl.NumberFormat with 'id-ID' locale
+ * Format date to Indonesian locale
+ * Example: "25 Agustus 2026"
+ */
+export function formatDateID(dateString: string | Date): string {
+  const date = typeof dateString === 'string' ? parseISO(dateString) : dateString
+  return format(date, 'd MMMM yyyy', { locale: id })
+}
+
+/**
+ * Format date with time
+ * Example: "25 Agustus 2026, 14:30"
+ */
+export function formatDateTimeID(dateString: string | Date): string {
+  const date = typeof dateString === 'string' ? parseISO(dateString) : dateString
+  return format(date, 'd MMMM yyyy, HH:mm', { locale: id })
+}
+
+/**
+ * Format date short
+ * Example: "25 Agu 2026"
+ */
+export function formatDateShortID(dateString: string | Date): string {
+  const date = typeof dateString === 'string' ? parseISO(dateString) : dateString
+  return format(date, 'd MMM yyyy', { locale: id })
+}
+
+/**
+ * Format relative time
+ * Example: "3 hari yang lalu"
+ */
+export function formatRelativeTime(dateString: string | Date): string {
+  const date = typeof dateString === 'string' ? parseISO(dateString) : dateString
+  return formatDistanceToNow(date, { addSuffix: true, locale: id })
+}
+
+/**
+ * Currency formatter
  */
 export function formatIDR(amount: number): string {
   return new Intl.NumberFormat('id-ID', {
@@ -10,14 +47,5 @@ export function formatIDR(amount: number): string {
     currency: 'IDR',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(amount);
-}
-
-/**
- * Format date as 'dd MMM yyyy' (e.g., "15 Jan 2024")
- * Uses date-fns for consistent formatting
- */
-export function formatDate(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  return format(dateObj, 'dd MMM yyyy');
+  }).format(amount)
 }
